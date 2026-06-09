@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, Copy, Star, Check, X, Shield, RefreshCw, ArrowUpDown, Filter as FilterIcon } from 'lucide-react';
 import { templates as staticTemplates } from '../data';
+import AdBanner from './AdBanner';
 import { Template } from '../types';
 import { getTemplates as fetchDbTemplates } from '../lib/db';
 import { copyToClipboard } from '../lib/utils';
@@ -136,6 +137,11 @@ export default function TemplatesView({
           </div>
         </div>
       </section>
+
+      {/* Ad banner row */}
+      <div className="bg-surface-container/40 border border-outline-variant rounded-2xl overflow-hidden flex items-center justify-center min-h-[200px]">
+        <AdBanner zoneId="11410694" className="w-full h-full flex items-center justify-center" />
+      </div>
 
       {/* Grid listing */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

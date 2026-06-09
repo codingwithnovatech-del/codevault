@@ -5,6 +5,7 @@
 
 import { Home, FileCode, Component, Wrench, CircleUser, Shield, LifeBuoy, Play } from 'lucide-react';
 import { Tab } from '../types';
+import AdBanner from './AdBanner';
 
 interface BottomNavBarProps {
   currentTab: Tab;
@@ -28,7 +29,11 @@ export default function BottomNavBar({ currentTab, setTab, showAdmin }: BottomNa
   }
 
   return (
-    <nav id="bottom-nav-bar" className="fixed bottom-0 left-0 right-0 z-40 rounded-t-2xl bg-surface-container border-t border-outline-variant shadow-2xl flex justify-around items-center h-20 px-2 pb-safe md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
+      <div className="flex justify-center bg-surface-container border-t border-outline-variant px-2 py-1">
+        <AdBanner zoneId="11410702" />
+      </div>
+      <nav id="bottom-nav-bar" className="bg-surface-container border-t border-outline-variant shadow-2xl flex justify-around items-center h-20 px-2 pb-safe">
       {tabsConfig.map((tab) => {
         const Icon = tab.icon;
         const isActive = currentTab === tab.id;
@@ -50,5 +55,6 @@ export default function BottomNavBar({ currentTab, setTab, showAdmin }: BottomNa
         );
       })}
     </nav>
+    </div>
   );
 }

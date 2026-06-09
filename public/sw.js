@@ -1,28 +1,34 @@
-const CACHE = 'codevault-v1';
-const urls = ['/', '/index.html'];
+var CACHE = 'codevault-v3';
+var urls = ['/', '/index.html'];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(urls)));
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(CACHE).then(function(c) { return c.addAll(urls); })
+  );
   self.skipWaiting();
-});
-
-self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))));
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-  if (e.request.mode === 'navigate') {
-    e.respondWith(caches.match('/').then((r) => r || fetch(e.request)));
-    return;
-  }
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.map(function(k) {
+          if (k !== CACHE) { return caches.delete(k); }
+        })
+      );
+    }).then(function() {
+      return self.clients.matchAll().then(function(clients) {
+        clients.forEach(function(client) { client.navigate(client.url); });
+      });
+    })
+  );
+});
+
+self.addEventListener('fetch', function(e) {
   e.respondWith(
-    caches.match(e.request).then((r) => r || fetch(e.request).then((res) => {
-      if (res.ok && e.request.url.startsWith(self.location.origin)) {
-        const clone = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, clone));
-      }
-      return res;
-    }))
+    fetch(e.request).catch(function() {
+      return caches.match(e.request);
+    })
   );
 });
