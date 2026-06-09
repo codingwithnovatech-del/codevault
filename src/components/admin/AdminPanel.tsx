@@ -372,7 +372,7 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
               <Bot className="h-4 w-4 text-primary" />
               <h3 className="text-sm font-bold text-on-surface">AI Tools Configuration</h3>
             </div>
-            <p className="text-xs text-on-surface-variant/60 font-light">Manage AI-powered developer tools. Requires a valid Gemini API key.</p>
+            <p className="text-xs text-on-surface-variant/60 font-light">Manage AI-powered developer tools. Requires a valid Groq API key.</p>
 
             <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2 text-xs">
@@ -403,10 +403,10 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
             <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 space-y-2">
               <p className="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-wider">Important</p>
               <ul className="space-y-1.5 text-[11px] text-on-surface-variant/70">
-                <li className="flex items-start gap-2">• Set <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">VITE_GEMINI_API_KEY</code> in <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">.env.local</code></li>
-                <li className="flex items-start gap-2">• Get a free API key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">aistudio.google.com/apikey</a></li>
+                <li className="flex items-start gap-2">• Set <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">VITE_GROQ_API_KEY</code> in <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">.env.local</code></li>
+                <li className="flex items-start gap-2">• Get a free API key at <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">console.groq.com/keys</a></li>
                 <li className="flex items-start gap-2">• Rate limit: 20 calls/minute</li>
-                <li className="flex items-start gap-2">• Model: Gemini 2.0 Flash (free tier)</li>
+                <li className="flex items-start gap-2">• Model: Groq Llama 3.1 8B (fast & free)</li>
               </ul>
             </div>
           </div>

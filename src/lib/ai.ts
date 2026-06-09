@@ -1,5 +1,6 @@
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.1-8b-instant';
 
 let callCount = 0;
 const MAX_CALLS = 20;
@@ -7,9 +8,9 @@ const RESET_INTERVAL = 60000;
 
 setInterval(() => { callCount = 0; }, RESET_INTERVAL);
 
-export async function callGemini(prompt: string): Promise<string> {
-  if (!API_KEY || API_KEY === 'MY_GEMINI_API_KEY') {
-    return '⚠️ Gemini API key not configured. Set VITE_GEMINI_API_KEY in .env.local (get a free key at https://aistudio.google.com/apikey)';
+export async function callGroq(prompt: string): Promise<string> {
+  if (!API_KEY || !API_KEY.startsWith('gsk_')) {
+    return '⚠️ Groq API key not configured. Set VITE_GROQ_API_KEY in .env.local (get a free key at https://console.groq.com/keys)';
   }
 
   callCount++;
@@ -18,12 +19,17 @@ export async function callGemini(prompt: string): Promise<string> {
   }
 
   try {
-    const res = await fetch(`${API_URL}?key=${API_KEY}`, {
+    const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`,
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.3, maxOutputTokens: 4096 },
+        model: MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 4096,
       }),
     });
 
@@ -33,7 +39,7 @@ export async function callGemini(prompt: string): Promise<string> {
     }
 
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
+    const text = data?.choices?.[0]?.message?.content || 'No response generated.';
     return text;
   } catch (err: any) {
     return `⚠️ Network error: ${err?.message || 'Unknown error'}`;
