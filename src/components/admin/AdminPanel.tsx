@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer, Megaphone, ExternalLink as ExtLink, Bot, Sparkles } from 'lucide-react';
+import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer, Megaphone, ExternalLink as ExtLink, Bot, Sparkles, GraduationCap, Code as CodeIcon } from 'lucide-react';
 import { getTemplates, createTemplate, updateTemplate, deleteTemplate, getComponents, createComponent, updateComponent, deleteComponent, getAllProfiles, toggleUserDisabled, deleteUserData, getUserStats, getAppSetting, setAppSetting } from '../../lib/db';
-import { templates as staticTemplates } from '../../data';
+import { templates as staticTemplates, challenges as staticChallenges, snippets as staticSnippets } from '../../data';
 import { SkeletonCard } from '../Skeleton';
 
-type AdminTab = 'templates' | 'components' | 'users' | 'support' | 'promotions' | 'ai';
+type AdminTab = 'templates' | 'components' | 'users' | 'support' | 'promotions' | 'ai' | 'challenges' | 'snippets';
 
 interface SupportChannel {
   enabled: boolean;
@@ -30,6 +30,8 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('templates');
   const [templates, setTemplates] = useState<any[]>([]);
   const [components, setComponents] = useState<any[]>([]);
+  const [challenges, setChallenges] = useState<any[]>(staticChallenges);
+  const [snippets, setSnippets] = useState<any[]>(staticSnippets);
   const [users, setUsers] = useState<any[]>([]);
   const [editing, setEditing] = useState<any | null>(null);
   const [form, setForm] = useState<any>({});
@@ -178,6 +180,8 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
     { id: 'users' as AdminTab, label: 'Users', icon: Users },
     { id: 'promotions' as AdminTab, label: 'Promotions', icon: Megaphone },
     { id: 'ai' as AdminTab, label: 'AI Tools', icon: Bot },
+    { id: 'challenges' as AdminTab, label: 'Challenges', icon: GraduationCap },
+    { id: 'snippets' as AdminTab, label: 'Snippets', icon: CodeIcon },
     { id: 'support' as AdminTab, label: 'Support', icon: MessageCircle },
   ];
 
@@ -286,6 +290,46 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
               <Save className="h-3.5 w-3.5" />
               Save Banner
             </button>
+          </div>
+        </div>
+      ) : activeTab === 'challenges' ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-on-surface">Coding Challenges ({challenges.length})</h2>
+          </div>
+          <div className="space-y-2">
+            {challenges.map((ch) => (
+              <div key={ch.id} className="bg-surface-container/40 border border-outline-variant/30 rounded-xl p-4 flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-on-surface truncate">{ch.title}</h4>
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${ch.difficulty === 'beginner' ? 'text-emerald-400 bg-emerald-500/10' : ch.difficulty === 'intermediate' ? 'text-amber-400 bg-amber-500/10' : 'text-rose-400 bg-rose-500/10'}`}>{ch.difficulty}</span>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant/60 truncate mt-0.5">{ch.description}</p>
+                  <p className="text-[10px] font-mono text-on-surface-variant/40 mt-0.5">{ch.points} pts · {ch.language} · {ch.completed || 0} completions</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : activeTab === 'snippets' ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-on-surface">Code Snippets ({snippets.length})</h2>
+          </div>
+          <div className="space-y-2">
+            {snippets.map((sn) => (
+              <div key={sn.id} className="bg-surface-container/40 border border-outline-variant/30 rounded-xl p-4 flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-on-surface truncate">{sn.title}</h4>
+                    <span className="text-[9px] font-mono text-primary bg-primary/10 px-1.5 py-0.5 rounded">{sn.language}</span>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant/60 truncate mt-0.5">{sn.description}</p>
+                  <p className="text-[10px] font-mono text-on-surface-variant/40 mt-0.5">{sn.upvotes} upvotes · by {sn.username} · {sn.tags?.map((t: string) => `#${t}`).join(' ')}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ) : activeTab === 'support' ? (

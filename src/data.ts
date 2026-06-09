@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Template, ComponentAsset, DeveloperProfile } from './types';
+import { Template, ComponentAsset, DeveloperProfile, Challenge, Snippet, Badge } from './types';
 
 function genThumb(title: string, cat: string): string {
   const palettes: Record<string, [string, string, string]> = {
@@ -823,6 +823,219 @@ export const componentsList: ComponentAsset[] = [
     category: 'Overlays',
     code: '<div class=\"fixed inset-0 bg-slate-950/60 backdrop-blur-lg flex items-center justify-center p-4 z-50 animate-fade-in\">\n  <div class=\"max-w-md w-full bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl relative space-y-4\">\n    <button class=\"absolute top-4 right-4 text-slate-400 hover:text-white\">&times;</button>\n    <h3 class=\"text-lg font-bold text-white\">Ingress Action Secure</h3>\n    <p class=\"text-sm text-slate-400\">Authenticating operations node connection.</p>\n  </div>\n</div>',
   },
+];
+
+export const challenges: Challenge[] = [
+  {
+    id: 'challenge-1',
+    title: 'Build a Navbar',
+    description: 'Create a responsive navigation bar with a logo, menu links, and a hamburger toggle for mobile.',
+    difficulty: 'beginner',
+    category: 'HTML/CSS',
+    instructions: `Create a responsive navbar that:
+- Has a logo/brand on the left
+- Has at least 3 navigation links
+- Collapses into a hamburger menu on mobile (< 768px)
+- Uses a dark theme (background: #0f172a) with white text
+- Links change color on hover`,
+    starterCode: '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Navbar Challenge</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}body{background:#0f172a;color:#e2e8f0}</style></head><body></body></html>',
+    solution: '',
+    language: 'HTML/CSS',
+    points: 50,
+    completed: 1243,
+  },
+  {
+    id: 'challenge-2',
+    title: 'Build a Pricing Card',
+    description: 'Create a pricing card component with a title, price, feature list, and CTA button.',
+    difficulty: 'beginner',
+    category: 'HTML/CSS',
+    instructions: `Create a pricing card that includes:
+- Plan name at the top
+- Price per month (e.g., $29/mo)
+- At least 3 features with checkmarks
+- A "Sign Up" CTA button
+- Subtle border and shadow
+- Hover effect that lifts the card slightly`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS',
+    points: 40,
+    completed: 982,
+  },
+  {
+    id: 'challenge-3',
+    title: 'Build a Contact Form',
+    description: 'Create a contact form with name, email, message fields and validation.',
+    difficulty: 'beginner',
+    category: 'HTML/CSS/JS',
+    instructions: `Create a contact form with:
+- Name, Email, and Message fields
+- Client-side validation (required fields, email format)
+- Show error messages below invalid fields
+- Green border on valid fields, red on invalid
+- Success message on valid submission (prevent default)`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS/JS',
+    points: 60,
+    completed: 756,
+  },
+  {
+    id: 'challenge-4',
+    title: 'Build an Image Gallery',
+    description: 'Create a responsive image gallery with a lightbox preview.',
+    difficulty: 'intermediate',
+    category: 'HTML/CSS/JS',
+    instructions: `Create an image gallery with:
+- 3x3 grid of placeholder images (use colored divs or emojis)
+- Click any image to open a lightbox overlay
+- Lightbox shows the image larger with a dark backdrop
+- Close button and click-outside-to-close
+- Responsive: 1 column on mobile, 2 on tablet, 3 on desktop`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS/JS',
+    points: 80,
+    completed: 534,
+  },
+  {
+    id: 'challenge-5',
+    title: 'Build a JS Counter',
+    description: 'Create an interactive counter with increment, decrement, and reset buttons.',
+    difficulty: 'beginner',
+    category: 'JavaScript',
+    instructions: `Create a counter app with:
+- A number display (starts at 0)
+- + button to increment
+- - button to decrement
+- Reset button to go back to 0
+- Number changes color: green if > 0, red if < 0, white if 0
+- Minimum -10, maximum +10`,
+    starterCode: '',
+    solution: '',
+    language: 'JavaScript',
+    points: 30,
+    completed: 1567,
+  },
+  {
+    id: 'challenge-6',
+    title: 'Build a Todo List',
+    description: 'Create a functional todo list with add, complete, and delete actions.',
+    difficulty: 'intermediate',
+    category: 'JavaScript',
+    instructions: `Create a todo list app with:
+- Input field + Add button
+- Click todo to mark complete (strikethrough + dim)
+- Delete button on each todo
+- Show count of remaining items
+- Filter buttons: All / Active / Completed
+- Save todos in localStorage`,
+    starterCode: '',
+    solution: '',
+    language: 'JavaScript',
+    points: 100,
+    completed: 823,
+  },
+  {
+    id: 'challenge-7',
+    title: 'Build an Accordion FAQ',
+    description: 'Create an accessible accordion for frequently asked questions.',
+    difficulty: 'beginner',
+    category: 'HTML/CSS/JS',
+    instructions: `Create an accordion FAQ with:
+- 3-4 questions that expand/collapse on click
+- Only one item open at a time
+- Smooth height transition
+- Plus/minus or arrow icons
+- Keyboard accessible (Enter/Space to toggle)
+- Clean dark theme`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS/JS',
+    points: 50,
+    completed: 445,
+  },
+  {
+    id: 'challenge-8',
+    title: 'Build a Tabs Component',
+    description: 'Create a tabbed interface that switches content panels.',
+    difficulty: 'intermediate',
+    category: 'HTML/CSS/JS',
+    instructions: `Create a tabs component with:
+- 3-4 tabs at the top
+- Clicking a tab shows its content panel
+- Active tab has a bottom border/underline
+- Smooth fade transition between panels
+- Content can be any HTML
+- Works with keyboard navigation`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS/JS',
+    points: 65,
+    completed: 389,
+  },
+  {
+    id: 'challenge-9',
+    title: 'Build a Theme Switcher',
+    description: 'Create a dark/light theme toggle using CSS custom properties.',
+    difficulty: 'intermediate',
+    category: 'JavaScript',
+    instructions: `Create a theme switcher that:
+- Toggles between dark and light themes
+- Uses CSS custom properties (--bg, --text, etc.)
+- Smooth transition on switch
+- Remembers preference in localStorage
+- Sun/moon icon toggle button
+- At least 5 different CSS properties change`,
+    starterCode: '',
+    solution: '',
+    language: 'JavaScript',
+    points: 70,
+    completed: 612,
+  },
+  {
+    id: 'challenge-10',
+    title: 'Build a Progress Steps UI',
+    description: 'Create a multi-step progress indicator with active/completed states.',
+    difficulty: 'advanced',
+    category: 'HTML/CSS/JS',
+    instructions: `Create a progress steps UI with:
+- 4 steps displayed horizontally
+- Next/Previous buttons
+- Completed steps show a checkmark
+- Active step is highlighted
+- Connecting line between steps fills as you progress
+- Responsive: stack vertically on mobile
+- Animate the progress transitions`,
+    starterCode: '',
+    solution: '',
+    language: 'HTML/CSS/JS',
+    points: 90,
+    completed: 278,
+  },
+];
+
+export const snippets: Snippet[] = [
+  { id: 'snippet-1', title: 'Debounce Function', description: 'A generic debounce utility for search inputs and resize handlers.', code: 'function debounce(fn, delay = 300) {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n}', language: 'JavaScript', tags: ['utility', 'performance'], userId: 'demo', username: 'CodeVault', upvotes: 45, createdAt: '2 days ago' },
+  { id: 'snippet-2', title: 'Fetch Wrapper', description: 'Typed fetch wrapper with error handling and JSON parsing.', code: 'async function api(endpoint, options = {}) {\n  const res = await fetch(endpoint, {\n    headers: { "Content-Type": "application/json", ...options.headers },\n    ...options\n  });\n  if (!res.ok) throw new Error(`API error: ${res.status}`);\n  return res.json();\n}', language: 'JavaScript', tags: ['api', 'fetch'], userId: 'demo', username: 'CodeVault', upvotes: 38, createdAt: '3 days ago' },
+  { id: 'snippet-3', title: 'CSS Glassmorphism', description: 'Modern glassmorphism effect with backdrop blur.', code: '.glass {\n  background: rgba(255, 255, 255, 0.1);\n  backdrop-filter: blur(12px);\n  border: 1px solid rgba(255, 255, 255, 0.15);\n  border-radius: 16px;\n  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);\n}', language: 'CSS', tags: ['design', 'glassmorphism'], userId: 'demo', username: 'CodeVault', upvotes: 52, createdAt: '5 days ago' },
+  { id: 'snippet-4', title: 'React useState Logger', description: 'A custom hook that logs state changes to console.', code: 'function useLogger(initialValue, name = "state") {\n  const [value, setValue] = useState(initialValue);\n  useEffect(() => {\n    console.log(`[${name}] changed:`, value);\n  }, [value]);\n  return [value, setValue];\n}', language: 'React', tags: ['react', 'hooks', 'debug'], userId: 'demo', username: 'CodeVault', upvotes: 29, createdAt: '1 week ago' },
+  { id: 'snippet-5', title: 'CSS Grid Overlay', description: 'Quick grid overlay for checking alignment during development.', code: 'body::after {\n  content: "";\n  position: fixed;\n  inset: 0;\n  background-image:\n    linear-gradient(rgba(59,130,246,0.1) 1px, transparent 1px),\n    linear-gradient(90deg, rgba(59,130,246,0.1) 1px, transparent 1px);\n  background-size: 20px 20px;\n  pointer-events: none;\n  z-index: 9999;\n}', language: 'CSS', tags: ['design', 'layout', 'debug'], userId: 'demo', username: 'CodeVault', upvotes: 33, createdAt: '4 days ago' },
+  { id: 'snippet-6', title: 'Array Chunk', description: 'Split an array into chunks of specified size.', code: 'function chunk(arr, size) {\n  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>\n    arr.slice(i * size, i * size + size)\n  );\n}', language: 'JavaScript', tags: ['array', 'utility'], userId: 'demo', username: 'CodeVault', upvotes: 21, createdAt: '6 days ago' },
+  { id: 'snippet-7', title: 'CSS Scrollbar Styling', description: 'Custom scrollbar styling for dark themes.', code: '::-webkit-scrollbar {\n  width: 6px;\n}\n::-webkit-scrollbar-track {\n  background: #1e293b;\n}\n::-webkit-scrollbar-thumb {\n  background: #334155;\n  border-radius: 3px;\n}\n::-webkit-scrollbar-thumb:hover {\n  background: #475569;\n}', language: 'CSS', tags: ['design', 'ui'], userId: 'demo', username: 'CodeVault', upvotes: 47, createdAt: '2 weeks ago' },
+  { id: 'snippet-8', title: 'LocalStorage Wrapper', description: 'Simple typed localStorage wrapper with JSON parsing.', code: 'const store = {\n  get(key) {\n    try { return JSON.parse(localStorage.getItem(key)); }\n    catch { return null; }\n  },\n  set(key, value) {\n    localStorage.setItem(key, JSON.stringify(value));\n  },\n  remove(key) {\n    localStorage.removeItem(key);\n  }\n};', language: 'JavaScript', tags: ['storage', 'utility'], userId: 'demo', username: 'CodeVault', upvotes: 31, createdAt: '3 days ago' },
+];
+
+export const badges: Badge[] = [
+  { id: 'badge-1', name: 'First Star', description: 'Star your first template', icon: '⭐' },
+  { id: 'badge-2', name: 'Template Collector', description: 'Save 5 templates', icon: '📦' },
+  { id: 'badge-3', name: 'Code Contributor', description: 'Upload your first template', icon: '🚀' },
+  { id: 'badge-4', name: 'Challenge Novice', description: 'Complete your first challenge', icon: '🎯' },
+  { id: 'badge-5', name: 'Challenge Pro', description: 'Complete 5 challenges', icon: '🏆' },
+  { id: 'badge-6', name: 'Snippet Sharer', description: 'Share your first snippet', icon: '📝' },
+  { id: 'badge-7', name: 'Top Rater', description: 'Rate 10 templates', icon: '🌟' },
+  { id: 'badge-8', name: 'API User', description: 'Generate an API token', icon: '🔑' },
 ];
 
 export const initialProfile: DeveloperProfile = {

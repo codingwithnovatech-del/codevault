@@ -31,8 +31,10 @@ const navPages: { id: string; title: string; description: string; tab: Tab }[] =
   { id: 'components', title: 'Components', description: 'Raw visual fragments', tab: 'components' },
   { id: 'tools', title: 'Tools', description: 'Styling & layout systems', tab: 'tools' },
   { id: 'playground', title: 'Playground', description: 'Live code editor & preview', tab: 'playground' },
-  { id: 'ai', title: 'AI Tools', description: 'Gemini-powered dev tools', tab: 'ai' },
-  { id: 'profile', title: 'Profile', description: 'Stats, tokens & stars', tab: 'profile' },
+  { id: 'ai', title: 'AI Tools', description: 'Groq-powered dev tools', tab: 'ai' },
+  { id: 'learn', title: 'Learn', description: 'Coding challenges & practice', tab: 'learn' },
+  { id: 'snippets', title: 'Snippets', description: 'Community code fragments', tab: 'snippets' },
+  { id: 'profile', title: 'Profile', description: 'Stats, badges & tokens', tab: 'profile' },
   { id: 'support', title: 'Support', description: 'Community, docs & feedback', tab: 'support' },
 ];
 

@@ -62,7 +62,7 @@ export interface TemplateReview {
   count: number;
 }
 
-export type Tab = 'home' | 'templates' | 'components' | 'tools' | 'playground' | 'profile' | 'admin' | 'support' | 'ai';
+export type Tab = 'home' | 'templates' | 'components' | 'tools' | 'playground' | 'profile' | 'admin' | 'support' | 'ai' | 'learn' | 'snippets';
 
 export type AIToolType = 'explain' | 'docs' | 'review' | 'regex';
 
@@ -70,4 +70,42 @@ export interface AIResponse {
   content: string;
   error?: string;
   loading: boolean;
+}
+
+export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+
+export interface Challenge {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: Difficulty;
+  category: string;
+  instructions: string;
+  starterCode: string;
+  solution: string;
+  language: string;
+  points: number;
+  completed?: number;
+}
+
+export interface Snippet {
+  id: string;
+  title: string;
+  description: string;
+  code: string;
+  language: string;
+  tags: string[];
+  userId: string;
+  username: string;
+  upvotes: number;
+  createdAt: string;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  earned?: boolean;
+  earnedAt?: string;
 }

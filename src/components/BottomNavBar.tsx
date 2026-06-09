@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Home, FileCode, Component, Wrench, CircleUser, Shield, LifeBuoy, Play, Bot } from 'lucide-react';
+import { Home, FileCode, Component, Wrench, CircleUser, Shield, LifeBuoy, Play, Bot, GraduationCap, Code } from 'lucide-react';
 import { Tab } from '../types';
 
 interface BottomNavBarProps {
@@ -20,6 +20,8 @@ export default function BottomNavBar({ currentTab, setTab, showAdmin }: BottomNa
     { id: 'tools' as Tab, label: 'Tools', icon: Wrench },
     { id: 'playground' as Tab, label: 'Play', icon: Play },
     { id: 'ai' as Tab, label: 'AI', icon: Bot },
+    { id: 'learn' as Tab, label: 'Learn', icon: GraduationCap },
+    { id: 'snippets' as Tab, label: 'Snippets', icon: Code },
     { id: 'profile' as Tab, label: 'Profile', icon: CircleUser },
     { id: 'support' as Tab, label: 'Support', icon: LifeBuoy },
   ];

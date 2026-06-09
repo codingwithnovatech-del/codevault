@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Key, Star, Trash2, Plus, Terminal, Check, Copy, User, LogOut, Sun, Moon, Edit3, X, Save, AtSign, Briefcase, Quote, Camera } from 'lucide-react';
-import { templates, componentsList } from '../data';
-import { ApiToken, DeveloperProfile, Template, ComponentAsset } from '../types';
+import { Key, Star, Trash2, Plus, Terminal, Check, Copy, User, LogOut, Sun, Moon, Edit3, X, Save, AtSign, Briefcase, Quote, Camera, Trophy } from 'lucide-react';
+import { templates, componentsList, badges as staticBadges } from '../data';
+import { ApiToken, DeveloperProfile, Template, ComponentAsset, Badge } from '../types';
 import { useTheme } from '../lib/theme';
 import { copyToClipboard } from '../lib/utils';
 
@@ -225,6 +225,32 @@ export default function ProfileView({
               <p className="text-[10px] font-mono text-on-surface-variant/40">No tokens yet</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Badges Section */}
+      <section className="bg-surface-container/20 border border-outline-variant/30 rounded-xl p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Trophy className="h-4 w-4 text-amber-400" />
+          <h2 className="text-sm font-bold text-on-surface">Badges & Achievements</h2>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {staticBadges.map((badge) => {
+            const earned = profile.savedTemplates.length >= 5 && badge.id === 'badge-2'
+              || profile.stats.starsCount >= 1 && badge.id === 'badge-1'
+              || profile.savedTemplates.length >= 1 && badge.id === 'badge-4';
+            return (
+              <div key={badge.id} className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs transition-all ${
+                earned ? 'bg-amber-500/10 border-amber-500/30 text-on-surface' : 'bg-surface-container-high/20 border-outline-variant/20 text-on-surface-variant/40'
+              }`}>
+                <span className="text-sm">{badge.icon}</span>
+                <div>
+                  <p className={`text-[11px] font-semibold ${earned ? 'text-on-surface' : 'text-on-surface-variant/50'}`}>{badge.name}</p>
+                  <p className={`text-[9px] ${earned ? 'text-on-surface-variant/60' : 'text-on-surface-variant/30'}`}>{badge.description}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

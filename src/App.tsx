@@ -33,6 +33,8 @@ import OnboardingTour from './components/OnboardingTour';
 import PromoBanner from './components/PromoBanner';
 import ErrorBoundary from './components/ErrorBoundary';
 import AIToolsView from './components/AIToolsView';
+import LearnView from './components/LearnView';
+import SnippetsView from './components/SnippetsView';
 
 // Lazy-loaded views (Monaco Editor is heavy)
 const PlaygroundView = lazy(() => import('./components/PlaygroundView'));
@@ -489,6 +491,14 @@ function AppContent() {
 
               {activeTab === 'ai' && (
                 <AIToolsView />
+              )}
+
+              {activeTab === 'learn' && (
+                <LearnView />
+              )}
+
+              {activeTab === 'snippets' && (
+                <SnippetsView />
               )}
             </motion.div>
           </AnimatePresence>
