@@ -13,10 +13,13 @@ export default function AdBanner({ zoneId, className = '' }: AdBannerProps) {
     if (called.current) return;
     called.current = true;
     const timer = setTimeout(() => {
-      if (window.aclib && ref.current) {
-        try { aclib.runBanner({ zoneId }); } catch {}
+      if (ref.current && window.aclib) {
+        const s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.text = 'aclib.runBanner({zoneId:"' + zoneId + '"});';
+        ref.current.appendChild(s);
       }
-    }, 100);
+    }, 200);
     return () => clearTimeout(timer);
   }, [zoneId]);
 
