@@ -1,0 +1,6 @@
+{
+  "name": "CodeVault",
+  "description": "A high-performance developer hub and assets vault featuring dark glassmorphism SaaS layouts, responsive templates, code snippets, interactive design generators, and workspace statistics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
