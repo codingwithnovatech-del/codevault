@@ -33,6 +33,7 @@ import UserLoginPage from './components/UserLoginPage';
 import OfflineIndicator from './components/OfflineIndicator';
 import CommandPalette from './components/CommandPalette';
 import OnboardingTour from './components/OnboardingTour';
+import PromoBanner from './components/PromoBanner';
 
 function AppContent() {
   const { user, loading, signIn, signUp, signOut, resetPassword, signInWithGoogle, signInWithGithub } = useAuth();
@@ -245,6 +246,9 @@ function AppContent() {
 
       {/* Offline indicator */}
       <OfflineIndicator />
+
+      {/* Promotional Banner (from admin panel) */}
+      <PromoBanner userId={user?.id} />
 
       {/* Command Palette (Ctrl+K) */}
       {showPalette && (

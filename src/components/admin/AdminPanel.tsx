@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer } from 'lucide-react';
+import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer, Megaphone, ExternalLink as ExtLink } from 'lucide-react';
 import { getTemplates, createTemplate, updateTemplate, deleteTemplate, getComponents, createComponent, updateComponent, deleteComponent, getAllProfiles, toggleUserDisabled, deleteUserData, getUserStats, getAppSetting, setAppSetting } from '../../lib/db';
 import { templates as staticTemplates } from '../../data';
 import { SkeletonCard } from '../Skeleton';
 
-type AdminTab = 'templates' | 'components' | 'users' | 'support';
+type AdminTab = 'templates' | 'components' | 'users' | 'support' | 'promotions';
 
 interface SupportChannel {
   enabled: boolean;
@@ -39,6 +39,13 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
   const [loading, setLoading] = useState(true);
   const [userStats, setUserStats] = useState<Record<string, any>>({});
   const defaultChannel: SupportChannel = { enabled: false, url: '' };
+  const [promo, setPromo] = useState<{ title: string; image: string; link: string; enabled: boolean }>({ title: '', image: '', link: '', enabled: false });
+
+  useEffect(() => {
+    getAppSetting('promo_banner').then((data) => {
+      if (data) setPromo((typeof data === 'string' ? JSON.parse(data) : data));
+    }).catch(() => {});
+  }, []);
 
   const [supportLinks, setSupportLinks] = useState<SupportLinks>({
     telegram: { enabled: true, url: 'https://t.me/codevault' },
@@ -169,6 +176,7 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
     { id: 'templates' as AdminTab, label: 'Templates', icon: Layout },
     { id: 'components' as AdminTab, label: 'Components', icon: Code2 },
     { id: 'users' as AdminTab, label: 'Users', icon: Users },
+    { id: 'promotions' as AdminTab, label: 'Promotions', icon: Megaphone },
     { id: 'support' as AdminTab, label: 'Support', icon: MessageCircle },
   ];
 
@@ -241,6 +249,43 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
           {users.length > 0 && (
             <p className="text-[10px] font-mono text-on-surface-variant/30 text-center">{filteredUsers.length} / {users.length} users</p>
           )}
+        </div>
+      ) : activeTab === 'promotions' ? (
+        <div className="space-y-4">
+          <div className="bg-surface-container/40 border border-outline-variant/30 rounded-2xl p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Megaphone className="h-4 w-4 text-amber-400" />
+              <h3 className="text-sm font-bold text-on-surface">Promotional Banner</h3>
+            </div>
+            <p className="text-xs text-on-surface-variant/60 font-light">Show a banner/CTA on the site. Set image, link, and toggle on/off.</p>
+
+            {['title', 'image', 'link'].map((field) => (
+              <div key={field}>
+                <label className="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-wider mb-1 block">{field}</label>
+                <input value={(promo as any)[field] || ''} onChange={e => setPromo({...promo, [field]: e.target.value})}
+                  placeholder={field === 'title' ? 'Special Offer!' : field === 'image' ? 'https://example.com/banner.png' : 'https://example.com/offer'}
+                  className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/60" />
+              </div>
+            ))}
+
+            <label className="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer select-none">
+              <input type="checkbox" checked={promo.enabled} onChange={e => setPromo({...promo, enabled: e.target.checked})} className="rounded" />
+              Banner enabled
+            </label>
+
+            {promo.image && (
+              <div className="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl">
+                <p className="text-[10px] font-mono text-on-surface-variant/40 mb-2 uppercase tracking-wider">Preview</p>
+                <img src={promo.image} alt="" className="w-full h-24 object-cover rounded-lg border border-outline-variant/20" onError={(e) => (e.currentTarget.style.display = 'none')} />
+              </div>
+            )}
+
+            <button onClick={async () => { await setAppSetting('promo_banner', promo); addToast('Banner saved!', 'success'); }}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">
+              <Save className="h-3.5 w-3.5" />
+              Save Banner
+            </button>
+          </div>
         </div>
       ) : activeTab === 'support' ? (
         <div className="space-y-4">
