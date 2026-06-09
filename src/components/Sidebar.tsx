@@ -6,8 +6,6 @@
 import { Home, FileCode, Component, Wrench, CircleUser, Terminal, Shield, LifeBuoy, Play } from 'lucide-react';
 import { Tab, DeveloperProfile } from '../types';
 import { useRef, useCallback } from 'react';
-import AdBanner from './AdBanner';
-
 interface SidebarProps {
   currentTab: Tab;
   setTab: (tab: Tab) => void;
@@ -97,11 +95,6 @@ export default function Sidebar({ currentTab, setTab, starsCount, profile, showA
           );
         })}
       </nav>
-
-      {/* Ad Banner 250x250 */}
-      <div className="py-2 flex justify-center">
-        <AdBanner zoneId="11410654" />
-      </div>
 
       {/* Bottom Footer User Panel */}
       <div className="pt-4 border-t border-outline-variant/30 flex items-center justify-between">

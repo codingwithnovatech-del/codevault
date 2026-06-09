@@ -24,9 +24,22 @@
         for (var k of keys) { caches.delete(k); }
     });
     </script>
+    <style>
+    #ad-sidebar { position: fixed; left: 24px; bottom: 100px; width: 250px; height: 250px; z-index: 30; display: none; }
+    #ad-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 39; display: none; justify-content: center; background: transparent; padding: 2px; }
+    @media (min-width: 768px) { #ad-sidebar { display: block; } }
+    @media (max-width: 767px) { #ad-footer { display: flex; } }
+    </style>
   </head>
   <body class="bg-background text-on-surface">
     <div id="root"></div>
+
+    <div id="ad-sidebar"><script>aclib.runBanner({zoneId:'11410654'});</script></div>
+    <div id="ad-footer"><script>aclib.runBanner({zoneId:'11410702'});</script></div>
+
+    <script type="text/javascript">
+    aclib.runInPagePush({zoneId:'11410646', maxAds:2});
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, Trophy, Cpu, Code2, ArrowRight, Zap, Copy, Check, Wrench, TrendingUp, Sparkles, Star, Eye, Download, Grid3X3, Flame, Clock, Compass, Shield } from 'lucide-react';
 import { templates, componentsList } from '../data';
 import { Tab } from '../types';
@@ -61,15 +61,6 @@ export default function HomeView({
     { label: 'Starred', value: starsCount, icon: Star, accent: 'amber' },
     { label: 'API Tokens', value: apiTokensCount, icon: Code2, accent: 'emerald' },
   ];
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (window.aclib) {
-        try { aclib.runInPagePush({ zoneId: '11410646', maxAds: 2 }); } catch {}
-      }
-    }, 200);
-    return () => clearTimeout(timer);
-  }, []);
 
   const filteredItems = activeQuickTab === 'all'
     ? [...topTemplates.map(t => ({ ...t, type: 'template' as const })), ...topComponents.map(c => ({ ...c, type: 'component' as const }))]
