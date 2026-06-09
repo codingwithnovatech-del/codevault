@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Home, FileCode, Component, Wrench, CircleUser, Terminal, Shield, LifeBuoy, Play } from 'lucide-react';
+import { Home, FileCode, Component, Wrench, CircleUser, Terminal, Shield, LifeBuoy, Play, Bot } from 'lucide-react';
 import { Tab, DeveloperProfile } from '../types';
 import { useRef, useCallback } from 'react';
 interface SidebarProps {
@@ -35,6 +35,7 @@ export default function Sidebar({ currentTab, setTab, starsCount, profile, showA
     { id: 'components' as Tab, label: 'Code Components', desc: 'Raw visual fragments', icon: Component },
     { id: 'tools' as Tab, label: 'Interactive Tools', desc: 'Styling & layout systems', icon: Wrench },
     { id: 'playground' as Tab, label: 'Playground', desc: 'Live code editor & preview', icon: Play },
+    { id: 'ai' as Tab, label: 'AI Tools', desc: 'Gemini-powered dev tools', icon: Bot },
     { id: 'profile' as Tab, label: 'My Workspace', desc: 'Stats, persistent tokens & stars', icon: CircleUser },
     { id: 'support' as Tab, label: 'Help & Support', desc: 'Community, docs & feedback', icon: LifeBuoy },
   ];

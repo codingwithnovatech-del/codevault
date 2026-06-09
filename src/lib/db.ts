@@ -102,6 +102,28 @@ export async function deleteComponent(id: string) {
   await supabase.from('components').delete().eq('id', id);
 }
 
+// === REVIEWS ===
+
+export async function getTemplateReviews(templateId: string): Promise<{ rating: number; count: number }> {
+  try {
+    const { data } = await supabase
+      .from('template_reviews')
+      .select('rating')
+      .eq('template_id', templateId);
+    if (!data || data.length === 0) return { rating: 0, count: 0 };
+    const avg = data.reduce((s, r) => s + r.rating, 0) / data.length;
+    return { rating: Math.round(avg * 10) / 10, count: data.length };
+  } catch {
+    return { rating: 0, count: 0 };
+  }
+}
+
+export async function addTemplateReview(templateId: string, userId: string, rating: number) {
+  await supabase
+    .from('template_reviews')
+    .upsert({ template_id: templateId, user_id: userId, rating }, { onConflict: 'template_id,user_id' });
+}
+
 // === SAVED TEMPLATES ===
 
 export async function getSavedTemplateIds(profileId: string) {

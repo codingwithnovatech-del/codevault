@@ -15,5 +15,17 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR === 'true' ? false : undefined,
       watch: process.env.DISABLE_HMR === 'true' ? null : undefined,
     },
+    build: {
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-motion': ['motion'],
+            'vendor-monaco': ['@monaco-editor/react'],
+          },
+        },
+      },
+    },
   };
 });

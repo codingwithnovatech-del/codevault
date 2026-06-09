@@ -4,13 +4,14 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Eye, Copy, Star, Check, X, Shield, RefreshCw, ArrowUpDown, Filter as FilterIcon } from 'lucide-react';
+import { Eye, Copy, Star, Check, X, Shield, RefreshCw, ArrowUpDown, Filter as FilterIcon, Upload } from 'lucide-react';
 import { templates as staticTemplates } from '../data';
-import { Template } from '../types';
-import { getTemplates as fetchDbTemplates } from '../lib/db';
+import { Template, TemplateReview } from '../types';
+import { getTemplates as fetchDbTemplates, createTemplate, getTemplateReviews, addTemplateReview } from '../lib/db';
 import { copyToClipboard } from '../lib/utils';
 
 interface TemplatesViewProps {
+  userId?: string;
   searchQuery: string;
   onCopy: () => void;
   starredIds: string[];
@@ -28,6 +29,7 @@ function parseViewCount(v: string): number {
 }
 
 export default function TemplatesView({
+  userId,
   searchQuery,
   onCopy,
   starredIds,
@@ -44,6 +46,25 @@ export default function TemplatesView({
   const [simulatorLatency, setSimulatorLatency] = useState<number>(14);
   const [simulatedLoad, setSimulatedLoad] = useState<number>(31.4);
   const [templates, setTemplates] = useState<Template[]>(staticTemplates);
+
+  // Submit template modal
+  const [showSubmit, setShowSubmit] = useState(false);
+  const [submitForm, setSubmitForm] = useState({ title: '', description: '', category: 'Landing Pages', framework: 'HTML/CSS', code: '' });
+  const [submitting, setSubmitting] = useState(false);
+
+  // Ratings
+  const [ratings, setRatings] = useState<Record<string, TemplateReview>>({});
+  const [ratingModal, setRatingModal] = useState<{ id: string; title: string } | null>(null);
+  const [userRating, setUserRating] = useState(0);
+
+  useEffect(() => {
+    if (templates.length > 0) {
+      templates.slice(0, 12).forEach(async (t) => {
+        const r = await getTemplateReviews(t.id);
+        if (r.count > 0) setRatings((prev) => ({ ...prev, [t.id]: r }));
+      });
+    }
+  }, [templates]);
 
   useEffect(() => {
     fetchDbTemplates().then((dbTemplates) => {
@@ -96,6 +117,39 @@ export default function TemplatesView({
     addToast('Simulated node clusters synchronized successfully!', 'success');
   };
 
+  async function handleSubmitTemplate() {
+    if (!userId) { addToast('Please sign in to submit templates', 'error'); return; }
+    if (!submitForm.title || !submitForm.code) { addToast('Title and code are required', 'error'); return; }
+    setSubmitting(true);
+    try {
+      const id = submitForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now();
+      await createTemplate({
+        id, title: submitForm.title, description: submitForm.description,
+        image: '', alt: submitForm.description, framework: submitForm.framework,
+        category: submitForm.category, code: submitForm.code,
+        stars: 0, views: '0', lastUpdated: 'just now', author: 'user',
+        is_visible: false, is_featured: false, created_by: userId,
+      } as any);
+      addToast('Template submitted! Awaiting admin approval.', 'success');
+      setShowSubmit(false);
+      setSubmitForm({ title: '', description: '', category: 'Landing Pages', framework: 'HTML/CSS', code: '' });
+    } catch (err: any) {
+      addToast('Error: ' + (err.message || 'Failed to submit'), 'error');
+    }
+    setSubmitting(false);
+  }
+
+  async function handleRate(templateId: string) {
+    if (!userId) { addToast('Please sign in to rate', 'error'); return; }
+    if (userRating < 1 || userRating > 5) return;
+    await addTemplateReview(templateId, userId, userRating);
+    const r = await getTemplateReviews(templateId);
+    setRatings((prev) => ({ ...prev, [templateId]: r }));
+    setRatingModal(null);
+    setUserRating(0);
+    addToast('Rating submitted!', 'success');
+  }
+
   return (
     <div id="templates-view" className="space-y-6 animate-fade-in text-left">
       {/* Sticky Filters Bar */}
@@ -134,6 +188,13 @@ export default function TemplatesView({
               <option value="views" className="bg-surface-container text-on-surface">Most Views</option>
             </select>
           </div>
+
+          {/* Submit template button */}
+          <button onClick={() => setShowSubmit(true)}
+            className="flex items-center gap-1.5 shrink-0 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-[10px] font-semibold transition-all active:scale-95 shadow-lg shadow-primary/10">
+            <Upload className="h-3 w-3" />
+            Submit
+          </button>
         </div>
       </section>
 
@@ -228,8 +289,34 @@ export default function TemplatesView({
                     </p>
                   </div>
 
+                  {/* Rating row */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      {ratings[template.id] ? (
+                        <>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star key={s} className={`h-3 w-3 ${s <= Math.round(ratings[template.id].rating) ? 'text-amber-400 fill-amber-400' : 'text-outline-variant/30'}`} />
+                            ))}
+                          </div>
+                          <span className="text-[10px] font-mono text-on-surface-variant/50 ml-1">{ratings[template.id].rating} ({ratings[template.id].count})</span>
+                        </>
+                      ) : (
+                        <button onClick={() => setRatingModal({ id: template.id, title: template.title })}
+                          className="text-[10px] font-mono text-on-surface-variant/30 hover:text-primary transition-colors">
+                          + Rate
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-on-surface-variant/50">
+                      <span>{template.views} views</span>
+                      <span className="text-outline-variant/30">·</span>
+                      <span>{template.stars} ★</span>
+                    </div>
+                  </div>
+
                   {/* Actions buttons */}
-                  <div className="mt-auto flex gap-2 pt-2 border-t border-outline-variant/20">
+                  <div className="flex gap-2 pt-2 border-t border-outline-variant/20">
                     {/* Live Preview Eyeball Trigger */}
                     <button
                       id={`preview-trigger-${template.id}`}
@@ -505,6 +592,67 @@ export default function TemplatesView({
                 </button>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Submit Template Modal */}
+      {showSubmit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4" onClick={() => setShowSubmit(false)}>
+          <div className="bg-surface-container border border-outline-variant/50 rounded-2xl p-5 max-w-lg w-full shadow-xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-on-surface flex items-center gap-2"><Upload className="h-4 w-4 text-primary" /> Submit Template</h3>
+              <button onClick={() => setShowSubmit(false)} className="p-1 hover:text-primary rounded"><X className="h-4 w-4" /></button>
+            </div>
+            <div className="space-y-3">
+              <input placeholder="Title *" value={submitForm.title} onChange={e => setSubmitForm({...submitForm, title: e.target.value})}
+                className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/60" />
+              <input placeholder="Description" value={submitForm.description} onChange={e => setSubmitForm({...submitForm, description: e.target.value})}
+                className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/60" />
+              <div className="flex gap-2">
+                <select value={submitForm.category} onChange={e => setSubmitForm({...submitForm, category: e.target.value})}
+                  className="flex-1 bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs focus:outline-none">
+                  <option>Landing Pages</option><option>Dashboards</option><option>Portfolios</option><option>SaaS</option>
+                  <option>E-Commerce</option><option>Blogs</option><option>Authentication</option><option>AI/ML</option>
+                  <option>Tools</option><option>Gaming</option><option>Mobile/Responsive</option><option>Other</option>
+                </select>
+                <select value={submitForm.framework} onChange={e => setSubmitForm({...submitForm, framework: e.target.value})}
+                  className="flex-1 bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs focus:outline-none">
+                  <option>HTML/CSS</option><option>React</option><option>Vue.js</option><option>Tailwind</option><option>JavaScript</option>
+                </select>
+              </div>
+              <textarea placeholder="Full HTML/CSS/JS code *" value={submitForm.code} onChange={e => setSubmitForm({...submitForm, code: e.target.value})}
+                rows={8} className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs font-mono resize-none focus:outline-none focus:border-primary/60" />
+              <p className="text-[10px] font-mono text-on-surface-variant/30">After submission, admin will review and approve your template.</p>
+              <button onClick={handleSubmitTemplate} disabled={submitting || !submitForm.title || !submitForm.code}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all active:scale-[0.98] disabled:opacity-40">
+                {submitting ? 'Submitting...' : 'Submit for Review'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rating Modal */}
+      {ratingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4" onClick={() => setRatingModal(null)}>
+          <div className="bg-surface-container border border-outline-variant/50 rounded-2xl p-5 max-w-sm w-full shadow-xl" onClick={e => e.stopPropagation()}>
+            <div className="text-center space-y-3">
+              <h3 className="text-sm font-bold text-on-surface">Rate this Template</h3>
+              <p className="text-xs text-on-surface-variant/60">{ratingModal.title}</p>
+              <div className="flex items-center justify-center gap-1 py-3">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <button key={s} onClick={() => setUserRating(s)}
+                    className={`p-1 transition-all ${s <= userRating ? 'scale-110' : ''}`}>
+                    <Star className={`h-8 w-8 ${s <= userRating ? 'text-amber-400 fill-amber-400' : 'text-outline-variant/30'}`} />
+                  </button>
+                ))}
+              </div>
+              <button onClick={() => handleRate(ratingModal.id)} disabled={userRating < 1}
+                className="w-full py-2 rounded-xl bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-all disabled:opacity-40">
+                Submit Rating
+              </button>
             </div>
           </div>
         </div>

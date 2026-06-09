@@ -151,18 +151,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGithub = async (): Promise<string | null> => {
     try {
-      console.log('GitHub OAuth starting...');
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: { redirectTo: window.location.origin },
       });
-      console.log('GitHub OAuth response:', { data, error });
       if (error) return error.message;
       if (data?.url) {
-        console.log('Redirecting to:', data.url);
         window.location.href = data.url;
       } else {
-        console.log('No URL returned');
         return 'No OAuth URL returned';
       }
       return null;

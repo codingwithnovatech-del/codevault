@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer, Megaphone, ExternalLink as ExtLink } from 'lucide-react';
+import { Layout, Code2, Users, Plus, Edit3, Trash2, X, Save, Search, UserPlus, MessageCircle, Bug, BookOpen, Github, ExternalLink, Mail, Eye, Star, Timer, Megaphone, ExternalLink as ExtLink, Bot, Sparkles } from 'lucide-react';
 import { getTemplates, createTemplate, updateTemplate, deleteTemplate, getComponents, createComponent, updateComponent, deleteComponent, getAllProfiles, toggleUserDisabled, deleteUserData, getUserStats, getAppSetting, setAppSetting } from '../../lib/db';
 import { templates as staticTemplates } from '../../data';
 import { SkeletonCard } from '../Skeleton';
 
-type AdminTab = 'templates' | 'components' | 'users' | 'support' | 'promotions';
+type AdminTab = 'templates' | 'components' | 'users' | 'support' | 'promotions' | 'ai';
 
 interface SupportChannel {
   enabled: boolean;
@@ -177,6 +177,7 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
     { id: 'components' as AdminTab, label: 'Components', icon: Code2 },
     { id: 'users' as AdminTab, label: 'Users', icon: Users },
     { id: 'promotions' as AdminTab, label: 'Promotions', icon: Megaphone },
+    { id: 'ai' as AdminTab, label: 'AI Tools', icon: Bot },
     { id: 'support' as AdminTab, label: 'Support', icon: MessageCircle },
   ];
 
@@ -364,6 +365,52 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
             </div>
           </div>
         </div>
+      ) : activeTab === 'ai' ? (
+        <div className="space-y-4">
+          <div className="bg-surface-container/40 border border-outline-variant/30 rounded-2xl p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Bot className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-bold text-on-surface">AI Tools Configuration</h3>
+            </div>
+            <p className="text-xs text-on-surface-variant/60 font-light">Manage AI-powered developer tools. Requires a valid Gemini API key.</p>
+
+            <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2 text-xs">
+                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                <span className="font-semibold text-on-surface">Available AI Tools</span>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { id: 'explain', label: 'Code Explainer', desc: 'Paste code → get plain-English explanation' },
+                  { id: 'docs', label: 'Doc Generator', desc: 'Paste code → get JSDoc documentation' },
+                  { id: 'review', label: 'Code Reviewer', desc: 'Paste code → AI finds bugs & issues' },
+                  { id: 'regex', label: 'Regex Generator', desc: 'Describe pattern → get regex' },
+                ].map((tool) => (
+                  <div key={tool.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-container/40 border border-outline-variant/20">
+                    <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="h-3 w-3 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-on-surface">{tool.label}</p>
+                      <p className="text-[10px] text-on-surface-variant/60">{tool.desc}</p>
+                    </div>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Active</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-4 space-y-2">
+              <p className="text-[10px] font-mono text-on-surface-variant/40 uppercase tracking-wider">Important</p>
+              <ul className="space-y-1.5 text-[11px] text-on-surface-variant/70">
+                <li className="flex items-start gap-2">• Set <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">VITE_GEMINI_API_KEY</code> in <code className="text-primary bg-primary/10 px-1 rounded text-[10px]">.env.local</code></li>
+                <li className="flex items-start gap-2">• Get a free API key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">aistudio.google.com/apikey</a></li>
+                <li className="flex items-start gap-2">• Rate limit: 20 calls/minute</li>
+                <li className="flex items-start gap-2">• Model: Gemini 2.0 Flash (free tier)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       ) : (
         <>
           <div className="flex items-center justify-between">
@@ -438,12 +485,19 @@ export function AdminPanel({ addToast }: AdminPanelProps) {
                   <div className="flex items-center gap-2">
                     <h4 className="text-sm font-semibold text-on-surface truncate">{item.title}</h4>
                     {item.is_featured && <span className="text-[10px] font-mono text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded">FEATURED</span>}
+                    {item.is_visible === false && <span className="text-[10px] font-mono text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded">PENDING</span>}
                   </div>
                   <p className="text-[11px] text-on-surface-variant/60 truncate mt-0.5">{item.description}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <button onClick={() => startEdit(item)} className="p-1.5 rounded-lg hover:bg-surface-container-higher text-on-surface-variant hover:text-primary transition-colors" title="Edit"><Edit3 className="h-3.5 w-3.5" /></button>
-                  <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-lg hover:bg-rose-500/15 text-on-surface-variant hover:text-rose-400 transition-colors" title="Delete"><Trash2 className="h-3.5 w-3.5" /></button>
+                    {item.is_visible === false && (
+                      <button onClick={async () => { await updateTemplate(item.id, { is_visible: true } as any); addToast('Template approved!', 'success'); await loadData(); }}
+                        className="p-1.5 rounded-lg hover:bg-emerald-500/15 text-on-surface-variant hover:text-emerald-400 transition-colors" title="Approve">
+                        <Check className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                    <button onClick={() => startEdit(item)} className="p-1.5 rounded-lg hover:bg-surface-container-higher text-on-surface-variant hover:text-primary transition-colors" title="Edit"><Edit3 className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-lg hover:bg-rose-500/15 text-on-surface-variant hover:text-rose-400 transition-colors" title="Delete"><Trash2 className="h-3.5 w-3.5" /></button>
                 </div>
               </div>
             ))}

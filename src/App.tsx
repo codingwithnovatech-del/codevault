@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Github, Shield, Lock, LogIn, Timer } from 'lucide-react';
 
@@ -20,20 +20,25 @@ import BottomNavBar from './components/BottomNavBar';
 import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
 
-// Import views
+// Import views (eager — needed on initial render)
 import HomeView from './components/HomeView';
 import TemplatesView from './components/TemplatesView';
 import ComponentsView from './components/ComponentsView';
 import ToolsView from './components/ToolsView';
-import PlaygroundView from './components/PlaygroundView';
 import ProfileView from './components/ProfileView';
-import AdminView from './components/AdminView';
-import SupportView from './components/SupportView';
 import UserLoginPage from './components/UserLoginPage';
 import OfflineIndicator from './components/OfflineIndicator';
 import CommandPalette from './components/CommandPalette';
 import OnboardingTour from './components/OnboardingTour';
 import PromoBanner from './components/PromoBanner';
+import ErrorBoundary from './components/ErrorBoundary';
+import AIToolsView from './components/AIToolsView';
+
+// Lazy-loaded views (Monaco Editor is heavy)
+const PlaygroundView = lazy(() => import('./components/PlaygroundView'));
+const AdminView = lazy(() => import('./components/AdminView'));
+// SupportView is small — load eagerly to avoid chunk issues
+import SupportView from './components/SupportView';
 
 function AppContent() {
   const { user, loading, signIn, signUp, signOut, resetPassword, signInWithGoogle, signInWithGithub } = useAuth();
@@ -422,6 +427,7 @@ function AppContent() {
 
               {activeTab === 'templates' && (
                 <TemplatesView
+                  userId={user?.id}
                   searchQuery={searchQuery}
                   onCopy={handleCopyAction}
                   starredIds={profile.savedTemplates}
@@ -448,7 +454,11 @@ function AppContent() {
               )}
 
               {activeTab === 'playground' && (
-                <PlaygroundView />
+                <ErrorBoundary>
+                  <Suspense fallback={<div className="p-8 text-on-surface-variant text-sm">Loading editor&hellip;</div>}>
+                    <PlaygroundView />
+                  </Suspense>
+                </ErrorBoundary>
               )}
 
               {activeTab === 'profile' && (
@@ -461,14 +471,24 @@ function AppContent() {
               )}
 
               {activeTab === 'admin' && (
-                <AdminView
-                  addToast={addToast}
-                  onAuth={() => setAdminAuthenticated(true)}
-                />
+                <ErrorBoundary>
+                  <Suspense fallback={<div className="p-8 text-on-surface-variant text-sm">Loading&hellip;</div>}>
+                    <AdminView
+                      addToast={addToast}
+                      onAuth={() => setAdminAuthenticated(true)}
+                    />
+                  </Suspense>
+                </ErrorBoundary>
               )}
 
               {activeTab === 'support' && (
-                <SupportView />
+                <ErrorBoundary>
+                  <SupportView />
+                </ErrorBoundary>
+              )}
+
+              {activeTab === 'ai' && (
+                <AIToolsView />
               )}
             </motion.div>
           </AnimatePresence>

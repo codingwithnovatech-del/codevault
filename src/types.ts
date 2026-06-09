@@ -57,4 +57,17 @@ export interface ApiToken {
   lastUsed: string;
 }
 
-export type Tab = 'home' | 'templates' | 'components' | 'tools' | 'playground' | 'profile' | 'admin' | 'support';
+export interface TemplateReview {
+  rating: number;
+  count: number;
+}
+
+export type Tab = 'home' | 'templates' | 'components' | 'tools' | 'playground' | 'profile' | 'admin' | 'support' | 'ai';
+
+export type AIToolType = 'explain' | 'docs' | 'review' | 'regex';
+
+export interface AIResponse {
+  content: string;
+  error?: string;
+  loading: boolean;
+}

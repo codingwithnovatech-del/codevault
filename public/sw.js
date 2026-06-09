@@ -6,7 +6,6 @@ self.addEventListener('install', function(e) {
     caches.open(CACHE).then(function(c) { return c.addAll(urls); })
   );
   self.skipWaiting();
-  self.clients.claim();
 });
 
 self.addEventListener('activate', function(e) {
@@ -21,6 +20,8 @@ self.addEventListener('activate', function(e) {
       return self.clients.matchAll().then(function(clients) {
         clients.forEach(function(client) { client.navigate(client.url); });
       });
+    }).then(function() {
+      return self.clients.claim();
     })
   );
 });
